@@ -1,0 +1,19 @@
+sudo: false
+os: linux
+language: php
+
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+
+install:
+  - composer install
+
+script:
+  - exit 0
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+    - vendor
