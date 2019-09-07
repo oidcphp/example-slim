@@ -43,3 +43,6 @@ Desktop.ini
 # Artifacts files
 .phpunit.result.cache
 /build
+
+# Temp confxig file
+/config.php

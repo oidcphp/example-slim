@@ -10,13 +10,21 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
+        "illuminate/container": "^6.0",
         "oidc/core": "dev-master",
         "slim/psr7": "^0.5.0",
-        "slim/slim": "^4.2"
+        "slim/slim": "^4.2",
+        "symfony/console": "^4.3"
     },
     "require-dev": {
-        "psy/psysh": "^0.9.9"
+        "psy/psysh": "^0.9.9",
+        "symfony/var-dumper": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app"
+        }
     },
     "config": {
         "sort-packages": true
