@@ -15,7 +15,8 @@
         "oidc/core": "dev-master",
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.2",
-        "symfony/console": "^4.3"
+        "symfony/console": "^4.3",
+        "vlucas/phpdotenv": "^3.5"
     },
     "require-dev": {
         "psy/psysh": "^0.9.9",

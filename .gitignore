@@ -37,6 +37,7 @@ Desktop.ini
 /composer.lock
 
 # Config files
+/.env
 /phpcs.xml
 /phpunit.xml
 
