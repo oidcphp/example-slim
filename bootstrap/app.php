@@ -7,8 +7,12 @@ use OpenIDConnect\Client;
 use OpenIDConnect\Metadata\ClientMetadata;
 use OpenIDConnect\Metadata\ProviderMetadata;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Slim\Factory\AppFactory;
+use Slim\Psr7\Factory\ResponseFactory;
+use Slim\Psr7\Factory\UriFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,7 +22,11 @@ Dotenv::create(__DIR__ . '/../')->load();
 
 $container = new Container();
 
-$container->singleton(Client::class, function () {
+$container->singleton(ResponseFactoryInterface::class, ResponseFactory::class);
+$container->singleton(UriFactoryInterface::class, UriFactory::class);
+$container->singleton(\GuzzleHttp\ClientInterface::class, \GuzzleHttp\Client::class);
+
+$container->singleton(Client::class, function (Container $container) {
     $openIdConnectConfig = require __DIR__ . '/../config.php';
 
     $provider = new ProviderMetadata(
@@ -30,7 +38,7 @@ $container->singleton(Client::class, function () {
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect_uri' => env('GOOGLE_REDIRECT_URI'),
-    ]));
+    ]), $container);
 });
 
 $app = AppFactory::create(null, $container);
@@ -49,7 +57,7 @@ $app->get('/login', function (RequestInterface $request, ResponseInterface $resp
 
     $_SESSION['state'] = $state;
 
-    $client->authorize([
+    return $client->createAuthorizeRedirectResponse([
         'response_type' => 'code',
         'scope' => 'openid profile email',
         'state' => $state,
