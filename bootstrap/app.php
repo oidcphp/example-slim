@@ -9,9 +9,11 @@ use OpenIDConnect\Metadata\ProviderMetadata;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Slim\Factory\AppFactory;
 use Slim\Psr7\Factory\ResponseFactory;
+use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UriFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -22,6 +24,7 @@ Dotenv::create(__DIR__ . '/../')->load();
 
 $container = new Container();
 
+$container->singleton(StreamFactoryInterface::class, StreamFactory::class);
 $container->singleton(ResponseFactoryInterface::class, ResponseFactory::class);
 $container->singleton(UriFactoryInterface::class, UriFactory::class);
 $container->singleton(\GuzzleHttp\ClientInterface::class, \GuzzleHttp\Client::class);
@@ -49,7 +52,7 @@ $app->get('/', function (RequestInterface $request, ResponseInterface $response)
     return $response;
 });
 
-$app->get('/login', function (RequestInterface $request, ResponseInterface $response) use ($container) {
+$app->get('/login-post', function (RequestInterface $request, ResponseInterface $response) use ($container) {
     /** @var Client $client */
     $client = $container->make(Client::class);
 
@@ -57,7 +60,22 @@ $app->get('/login', function (RequestInterface $request, ResponseInterface $resp
 
     $_SESSION['state'] = $state;
 
-    return $client->createAuthorizeRedirectResponse([
+    return $client->createAuthorizeFormPostResponse([
+        'response_type' => 'code',
+        'scope' => 'openid profile email',
+        'state' => $state,
+    ]);
+});
+
+$app->get('/login-get', function (RequestInterface $request, ResponseInterface $response) use ($container) {
+    /** @var Client $client */
+    $client = $container->make(Client::class);
+
+    $state = Str::random();
+
+    $_SESSION['state'] = $state;
+
+    return $client->createAuthorizeFormPostResponse([
         'response_type' => 'code',
         'scope' => 'openid profile email',
         'state' => $state,
