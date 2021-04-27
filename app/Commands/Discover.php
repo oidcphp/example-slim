@@ -2,10 +2,15 @@
 
 namespace App\Commands;
 
+use MilesChou\Psr\Http\Client\HttpClientManager;
+use MilesChou\Psr\Http\Message\ResponseFactory;
+use MilesChou\Psr\Http\Message\StreamFactory;
 use OpenIDConnect\Issuer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Psr18Client;
 
 class Discover extends Command
 {
@@ -34,6 +39,12 @@ EOF;
 
     private function discoverGoogle()
     {
-        return Issuer::create('https://accounts.google.com/')->discover();
+        $httpClient = new HttpClientManager(new Psr18Client(
+            HttpClient::create(),
+            new ResponseFactory(),
+            new StreamFactory()
+        ));
+
+        return (new Issuer($httpClient))->discover('https://accounts.google.com/.well-known/openid-configuration');
     }
 }
