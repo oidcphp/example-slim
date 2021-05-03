@@ -1,8 +1,5 @@
 # Example on Slim Framework
 
-[![Build Status][travis-svg]][travis-link]
+[![Testing](https://github.com/oidcphp/example-slim/actions/workflows/testing.yml/badge.svg)](https://github.com/oidcphp/example-slim/actions/workflows/testing.yml)
 
 Example for using oidcphp on Slim Framework
-
-[travis-svg]: https://travis-ci.com/oidcphp/example-slim.svg?branch=master
-[travis-link]: https://travis-ci.com/oidcphp/example-slim
